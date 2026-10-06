@@ -11,10 +11,10 @@ function femesh_all = read_tetgen(filename)
 %       elementmarkers: [1 x nelement]
 
 
-disp("Reading from Tetgen FE mesh from " + filename);
+disp(["Reading from Tetgen FE mesh from ", char(filename)]);
 
 % Read nodes
-fid = fopen(filename + ".node", "r");
+fid = fopen([char(filename), ".node"], "r");
 if fid ~= -1
     fscanf(fid, "%d", [4, 1]);
     vec = fscanf(fid, "%f", [4, Inf]);
@@ -23,7 +23,7 @@ fclose(fid);
 points = vec(2:end, :);
 
 % Read facets and their associated boundaries
-fid = fopen(filename + ".face", "r");
+fid = fopen([char(filename), ".face"], "r");
 if fid ~= -1
     fscanf(fid, "%d", [2, 1]);
     vec = fscanf(fid, "%f", [5, inf]);
@@ -33,7 +33,7 @@ facets = vec(2:4, :);
 facetmarkers = vec(5, :);
 
 % Read elements and their associated compartments
-fid = fopen(filename + ".ele", "r");
+fid = fopen([char(filename), ".ele"], "r");
 if fid ~= -1
     line= fscanf(fid, "%d", [3, 1]);
     has_elementmarkers = line(3) == 1;

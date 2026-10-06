@@ -27,7 +27,7 @@ rmin = setup.geometry.rmin;
 rmax = setup.geometry.rmax;
 include_in = setup.geometry.include_in;
 ecs_shape = setup.geometry.ecs_shape;
-include_ecs = ecs_shape ~= "no_ecs";
+include_ecs = ~strcmp(char(ecs_shape), 'no_ecs');
 if include_in
     in_ratio = setup.geometry.in_ratio;
 else
@@ -92,7 +92,7 @@ if include_ecs
     points_ecs = [points_ecs{:}];
     [~, ind] = min(centers(1, :));
     regions_ecs = centers(:, ind) - [1; 0; 0] * (radii(ind) + ecs_ratio / 2 * rmean);
-    if ecs_shape == "box"
+    if strcmp(char(ecs_shape), 'box')
         pmin = min(points_ecs, [], 2);
         pmax = max(points_ecs, [], 2);
         points_ecs = [

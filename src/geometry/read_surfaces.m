@@ -6,7 +6,7 @@ function surfaces = read_surfaces(filename)
 
 
 % Get list of nodes from .node file
-fid = fopen(filename + ".node", "r");
+fid = fopen([char(filename), '.node'], 'r');
 fgetl(fid);
 fgetl(fid);
 tline = fgetl(fid);
@@ -21,7 +21,7 @@ end
 fclose(fid);
 
 % Read .poly file
-fid = fopen(filename + ".poly", "r");
+fid = fopen([char(filename), '.poly'], 'r');
 
 % Read list of holes (refer to separate file)
 fgetl(fid);

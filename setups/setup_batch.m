@@ -45,7 +45,7 @@
 
 %% Saved simulation location
 % setup.saved_simul_loc= "path/to/saved_simul";
-
+setup.name = "mesh_files/spindle/whole_neurons/03b_spindle4aACC";
 %% Geometry parameters
 setup.geometry.cell_shape = "neuron";                   % Cell shape; "sphere", "cylinder" or "neuron"
 setup.geometry.ncell = 1;                               % Number of cells
@@ -53,9 +53,10 @@ setup.geometry.deformation = [0; 0];                    % Domain deformation; [a
 setup.geometry.include_in = false;                      % Ratio Rin/R, within range [0,0.99]
 setup.geometry.in_ratio = 0.7;                          % Ratio Rin/R, within range [0,0.99]
 setup.geometry.ecs_shape = "no_ecs";                    % Shape of ECS: "no_ecs", "box", "convex_hull", or "tight_wrap".
-setup.geometry.ecs_ratio = 0.2;                         % ECS gap; percentage in side length                                      % Tetgen refinement parameter (comment for automatic)
+setup.geometry.ecs_ratio = 0.2;     
+                  % ECS gap; percentage in side length                                      % Tetgen refinement parameter (comment for automatic)
                     
-setup.geometry.tetgen_options = "-pq1.2a1.0O9VCn";    
+
 
 %% PDE parameters
 setup.pde.diffusivity_in = 0.002;                       % Diffusion coefficient IN (scalar or 3x3-tensor)

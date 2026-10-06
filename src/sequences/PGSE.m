@@ -5,6 +5,9 @@ classdef PGSE < Sequence
     %   An initial pause and a fixed echo time can be set through optional
     %   Sequence parameters.
     methods
+        function obj = PGSE(delta, Delta, varargin)
+            obj = obj@Sequence(delta, Delta, varargin{:});
+        end
         function f = call(obj, t)
             %CALL Call the PGSE time profile at time t.
             %   The function is vectorized.

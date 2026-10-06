@@ -30,13 +30,13 @@ if endsWith(filename, ".1")
     elements = femesh.elements;
     facets = femesh.facets;
 else
-    if ~isfile(filename + "_elements.txt") || ~isfile(filename + "_nodes.txt")
+    if ~isfile([char(filename), "_elements.txt"]) || ~isfile([char(filename), "_nodes.txt"])
         gmsh_to_fem_try(filename);
     end
-    disp("Reading from neuron FE mesh from " + filename);
 
-    elements = load(filename + "_elements.txt");
-    points = load(filename + "_nodes.txt");
+    disp(["Reading from neuron FE mesh from ", char(filename)]);
+    elements = load([char(filename), "_elements.txt"]);
+    points = load([char(filename), "_nodes.txt"]);
     points = points';
     elements = elements';
     

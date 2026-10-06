@@ -19,7 +19,7 @@ nfacet = size(facets, 2);
 nregion = size(regions, 2);
 
 % Write list of nodes in .node file
-fid = fopen(filename + ".node", "w");
+fid = fopen([char(filename), ".node"], "w");
 fprintf(fid, "# Part 1 - node list\n");
 fprintf(fid, "# node count, 3D, no attribute, no boundary marker\n");
 fprintf(fid, "%d %d %d %d\n", npoint, 3, 0, 0);
@@ -30,7 +30,7 @@ end
 fclose(fid);
 
 % Write .poly file
-fid = fopen(filename + ".poly", "w");
+fid = fopen([char(filename), ".poly"], "w");
 
 % Write list of holes (refer to separate file)
 fprintf(fid, "# Part 1 - node list\n");

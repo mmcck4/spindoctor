@@ -4,22 +4,15 @@ classdef (Abstract) AbsSequence
     %   not assumed to have a fixed driection vector.
     
      methods (Abstract)
-        f = call(obj, t)
-        %CALL Call the time profile at time `t`.
-        
-        t = diffusion_time(obj)
-        %DIFFUSION_TIME Get diffusion time of sequence.
-        
-        [timelist, interval_str, timeprofile_str] = intervals(obj)
-        %INTERVALS Get intervals of the sequence.
-        %   This function returns a list of important time steps (including
-        %   start and stop), a list of strings representing the intervals
-        %   between these time steps and a list of strings representing the
-        %   behavior of the sequence on each of these intervals.
-        
-        % TE = echotime(obj)
+        function f = call(obj, t)
+        end
 
-     end
+        function t = diffusion_time(obj)
+        end
+
+        function [timelist, interval_str, timeprofile_str] = intervals(obj)
+        end
+    end
      methods
         
         function F = integral(obj, t)

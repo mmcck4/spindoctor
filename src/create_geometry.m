@@ -43,7 +43,7 @@ end
 is_ply = ismember(lower(ext), [".stl", ".ply", ".off"]);
 
 % File name to save or load cell description
-cellfilename = filename + "_cells";
+cellfilename = [char(filename), '_cells'];
 
 % Check if cell description file is already available
 if isfile(cellfilename)
@@ -59,7 +59,7 @@ else
 end
 
 % Make directory for storing finite elements mesh
-meshdir_name = name + replace(ext, '.', '_') + "_dir";
+meshdir_name = [name, strrep(ext, '.', '_'), '_dir'];
 save_meshdir_path = fullfile(filepath, meshdir_name);
 if ~isfolder(save_meshdir_path)
     mkdir(save_meshdir_path);
@@ -84,17 +84,18 @@ if isfield(setup.geometry, "refinement")
     refinement_str = sprintf("_refine%g", setup.geometry.refinement);
 end
 if isfield(setup.geometry, "tetgen_options")
-    refinement_str = sprintf("_tet%s", setup.geometry.tetgen_options);
+    refinement_str = sprintf('_tet%s', char(setup.geometry.tetgen_options));
 end
 ecs_str = sprintf("_%s", setup.geometry.ecs_shape);
-if isfield(setup.geometry, 'ecs_ratio') && setup.geometry.ecs_shape ~= "no_ecs"
-    ecs_str = ecs_str + sprintf("%g", setup.geometry.ecs_ratio);
+if isfield(setup.geometry, 'ecs_ratio') && ~strcmp(char(setup.geometry.ecs_shape), 'no_ecs')
+    ecs_str = [ecs_str, sprintf('%g', setup.geometry.ecs_ratio)];
 end
 
-fname_tetgen = save_meshdir_path + "/" + name + ecs_str + refinement_str + "_mesh";
+fname_tetgen = [save_meshdir_path, '/', name, ecs_str, refinement_str, '_mesh'];
 
 % Read or create surface triangulation
-if isfile(fname_tetgen + ".node") && isfile(fname_tetgen + ".poly")
+% Read or create surface triangulation
+if isfile([fname_tetgen, '.node']) && isfile([fname_tetgen, '.poly'])
     surfaces = read_surfaces(fname_tetgen);
 else
     switch cell_shape
@@ -116,7 +117,7 @@ else
 end
 
 % Add ".1" suffix to output file name, since this is what Tetgen does
-fname_tetgen_femesh = fname_tetgen + ".1";
+fname_tetgen_femesh = [fname_tetgen, '.1'];
 
 if isfield(setup.geometry, "tetgen_options")
     tetgen_params = {setup.geometry.tetgen_options};
@@ -126,8 +127,8 @@ else
     tetgen_params = {};
 end
 
-if ~isfile(fname_tetgen_femesh + ".node")
-    call_tetgen(fname_tetgen + ".poly", tetgen_params{:});
+if ~isfile([fname_tetgen_femesh, '.node'])
+    call_tetgen([fname_tetgen, '.poly'], tetgen_params{:});
 end
 
 try
@@ -137,11 +138,19 @@ try
     % Check that at correct number of compartments and boundaries has been found
     compartments = unique(femesh_all.elementmarkers);
     boundaries = unique(femesh_all.facetmarkers);
+    disp('Compartments found:');
+    disp(compartments);
+    disp('Number of compartments:');
+    disp(length(compartments));
+
+    disp('Boundaries found:');
+    disp(boundaries);
+    disp('Number of boundaries:');
+    disp(length(boundaries));
     solution = "use smaller refinement or change surface triangulation.";
-    assert(ncompartment == length(compartments), "Incorrect number of compartments, " + solution);
-    assert(nboundary == length(boundaries), "Incorrect number of boundaries, " + solution);
+    assert(ncompartment == length(compartments), ['Incorrect number of compartments, ', char(solution)]);
+    assert(nboundary == length(boundaries), ['Incorrect number of boundaries, ', char(solution)]);
 catch ME
-    delete(fname_tetgen+"*")
     rethrow(ME)
 end
 

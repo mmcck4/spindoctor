@@ -33,17 +33,23 @@ else
 end
 
 % Options for Tetgen command
-if  nargin == nargin(@call_tetgen) && isnumeric(options) && options > 0
-    % Pass refinement to the 'a' flag of Tetgen. This gives a maximum
-    % tetrahedron volume (not length, as in earlier versions)
-    tetgen_options = "-pqAVCa" + num2str(options);
-elseif nargin == nargin(@call_tetgen) && isstring(options)
-    tetgen_options = options;
+% Options for Tetgen command
+
+if nargin < 2
+    tetgen_options = '-pqAVC';
+elseif isnumeric(options)
+    if options > 0
+        tetgen_options = ['-pqAVCa', num2str(options)];
+    else
+        tetgen_options = '-pqAVC';
+    end
 else
-    tetgen_options = "-pqAVC";
+    tetgen_options = char(options);
 end
 
 % Call Tetgen
-cmd = sprintf("%s %s %s", tetgen_cmd, tetgen_options, filename);
+
+cmd = [char(tetgen_cmd), ' ', char(tetgen_options), ' ', char(filename)];
 disp(cmd)
+
 system(cmd);

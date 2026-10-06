@@ -10,7 +10,7 @@ function pde = prepare_pde(setup)
 cell_shape = setup.geometry.cell_shape;
 ncell = setup.geometry.ncell;
 include_in = setup.geometry.include_in;
-include_ecs = setup.geometry.ecs_shape ~= "no_ecs";
+include_ecs = ~strcmp(char(setup.geometry.ecs_shape), 'no_ecs');
 
 pde = setup.pde;
 
@@ -89,14 +89,14 @@ end
 ncompartment = (1 + include_in) * ncell + include_ecs;
 
 % Find number of boundaries
-switch cell_shape
-    case "cylinder"
+switch char(cell_shape)
+    case 'cylinder'
         % An axon has a side interface, and a top-bottom boundary
         nboundary = (include_in + 1) * 2 * ncell + include_ecs;
-    case "sphere"
+    case 'sphere'
         % For a sphere, there is one interface
         nboundary = (include_in + 1) * ncell + include_ecs;
-    case "neuron"
+    case 'neuron'
         % For a neuron, there is one interface
         nboundary = 1 + include_ecs;
 end
@@ -125,7 +125,7 @@ else
     boundaries = [boundaries repmat("out", 1, ncell)];
 end
 
-if cell_shape == "cylinder"
+if strcmp(char(cell_shape), 'cylinder')
     if include_in
         % Add inner cylinder top and bottom boundary
         boundaries = [boundaries repmat("in", 1, ncell)];
@@ -138,7 +138,7 @@ if cell_shape == "cylinder"
     end
 end
 
-if ismember(cell_shape, ["sphere", "neuron"]) && include_ecs
+if (strcmp(char(cell_shape), 'sphere') || strcmp(char(cell_shape), 'neuron')) && include_ecs
     % Add ecs boundary
     boundaries = [boundaries "ecs"];
 end
@@ -150,25 +150,45 @@ initial_density = zeros(1, ncompartment);
 permeability = zeros(1, nboundary);
 
 % out compartments
-diffusivity(:, :, compartments == "out") = repmat(pde.diffusivity_out, 1, 1, sum(compartments == "out"));
-initial_density(compartments == "out") = pde.initial_density_out;
-relaxation(compartments == "out") = pde.relaxation_out;
-permeability(boundaries == "out") = pde.permeability_out;
+% out compartments
+out_compartments = strcmp(compartments, 'out');
+out_boundaries = strcmp(boundaries, 'out');
+
+diffusivity(:, :, out_compartments) = ...
+    repmat(pde.diffusivity_out, 1, 1, sum(out_compartments));
+
+initial_density(out_compartments) = pde.initial_density_out;
+relaxation(out_compartments) = pde.relaxation_out;
+permeability(out_boundaries) = pde.permeability_out;
 
 if include_ecs
-    diffusivity(:, :, compartments == "ecs") = repmat(pde.diffusivity_ecs, 1, 1, sum(compartments == "ecs"));
-    initial_density(compartments == "ecs") = pde.initial_density_ecs;
-    relaxation(compartments == "ecs") = pde.relaxation_ecs;
-    permeability(boundaries == "ecs") = pde.permeability_ecs;
-    permeability(boundaries == "out,ecs") = pde.permeability_out_ecs;
+    ecs_compartments = strcmp(compartments, 'ecs');
+    ecs_boundaries = strcmp(boundaries, 'ecs');
+    out_ecs_boundaries = strcmp(boundaries, 'out,ecs');
+
+    diffusivity(:, :, ecs_compartments) = ...
+        repmat(pde.diffusivity_ecs, 1, 1, sum(ecs_compartments));
+
+    initial_density(ecs_compartments) = pde.initial_density_ecs;
+    relaxation(ecs_compartments) = pde.relaxation_ecs;
+
+    permeability(ecs_boundaries) = pde.permeability_ecs;
+    permeability(out_ecs_boundaries) = pde.permeability_out_ecs;
 end
 
 if include_in
-    diffusivity(:, :, compartments == "in") = repmat(pde.diffusivity_in, 1, 1, sum(compartments == "in"));
-    initial_density(compartments == "in") = pde.initial_density_in;
-    relaxation(compartments == "in") = pde.relaxation_in;
-    permeability(boundaries == "in") = pde.permeability_in;
-    permeability(boundaries == "in,out") = pde.permeability_in_out;
+    in_compartments = strcmp(compartments, 'in');
+    in_boundaries = strcmp(boundaries, 'in');
+    in_out_boundaries = strcmp(boundaries, 'in,out');
+
+    diffusivity(:, :, in_compartments) = ...
+        repmat(pde.diffusivity_in, 1, 1, sum(in_compartments));
+
+    initial_density(in_compartments) = pde.initial_density_in;
+    relaxation(in_compartments) = pde.relaxation_in;
+
+    permeability(in_boundaries) = pde.permeability_in;
+    permeability(in_out_boundaries) = pde.permeability_in_out;
 end
 
 % Update domain parameters with new variables
