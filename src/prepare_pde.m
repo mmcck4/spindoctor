@@ -104,43 +104,41 @@ end
 % the list `boundaries` must have the same order as surfaces.facetmarkers
 % cylinder: `boundaries` = [('in,out'), ('out,ecs')/('out'), ('in'), 'out', ('ecs')]
 % sphere, neuron: `boundaries` = [('in,out'), ('out,ecs')/('out'), ('ecs')]
-compartments = [];
-boundaries = [];
-
+compartments = {};
+boundaries = {};
 if include_in
     % Add in-compartments and in-out-interfaces
-    compartments = repmat("in", 1, ncell);
-    boundaries = repmat("in,out", 1, ncell);
+    compartments = repmat({'in'}, 1, ncell);
+    boundaries = repmat({'in,out'}, 1, ncell);
 end
 
-% Add out-compartments
-compartments = [compartments repmat("out", 1, ncell)];
+compartments = [compartments repmat({'out'}, 1, ncell)];
 
 if include_ecs
     % Add ecs-compartment and out-ecs interfaces
-    compartments = [compartments "ecs"];
-    boundaries = [boundaries repmat("out,ecs", 1, ncell)];
+    compartments = [compartments {'ecs'}];
+    boundaries = [boundaries repmat({'out,ecs'}, 1, ncell)];
 else
     % Add outer cylinder side wall or sphere/neuron out boundaries
-    boundaries = [boundaries repmat("out", 1, ncell)];
+    boundaries = [boundaries repmat({'out'}, 1, ncell)];
 end
 
 if strcmp(char(cell_shape), 'cylinder')
     if include_in
         % Add inner cylinder top and bottom boundary
-        boundaries = [boundaries repmat("in", 1, ncell)];
+        boundaries = [boundaries repmat({'in'}, 1, ncell)];
     end
     % Add outer cylinder top and bottom boundary
-    boundaries = [boundaries repmat("out", 1, ncell)];
+    boundaries = [boundaries repmat({'out'}, 1, ncell)];
     % Add ecs boundary
     if include_ecs
-        boundaries = [boundaries "ecs"];
+        boundaries = [boundaries {'ecs'}];
     end
 end
 
 if (strcmp(char(cell_shape), 'sphere') || strcmp(char(cell_shape), 'neuron')) && include_ecs
     % Add ecs boundary
-    boundaries = [boundaries "ecs"];
+    boundaries = [boundaries {'ecs'}];
 end
 
 % Initialization

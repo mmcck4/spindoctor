@@ -48,34 +48,33 @@ function mag = btpde_seq_const(seq,ug,q,b,g,rho,Jx,K,Q,R,solve_ode,options_templ
         time_list_interval = [timelist(iint), interval_midpoint, timelist(iint + 1)];
     
         % Display state of iterations
+                % Display state of iterations
         fprintf( ...
-            join([
-                "Solving BTPDE of size %d using %s:"
-                "  Direction %d of %d: ug = [%.2f; %.2f; %.2f]"
-                "  Sequence  %d of %d: f = %s"
-                "  Amplitude %d of %d: g = %g, q = %g, b = %g"
-                "  Interval  %d of %d: I = %s, %s\n"
-            ], newline), ...
+            ["Solving BTPDE of size %d using %s:\n" ...
+             "  Direction %d of %d: ug = [%.2f; %.2f; %.2f]\n" ...
+             "  Sequence  %d of %d: f = %s\n" ...
+             "  Amplitude %d of %d: g = %g, q = %g, b = %g\n" ...
+             "  Interval  %d of %d: I = %s, %s\n"], ...
             sum(npoint_cmpts), solver_str, ...
             idir, ndirection, ug, ...
-            iseq, nsequence, seq, ...
+            iseq, nsequence, char(seq), ...
             iamp, namplitude, g, q, b, ...
             iint, ninterval, interval_str(iint), timeprofile_str(iint) ...
         );
+           
     
-        % Create new ODE functions on given interval
-        [ode_function, Jacobian] = btpde_functions_interval( ...
-            K, Q, R, J, q, seq, interval_midpoint);
+
     
         % Update options with new Jacobian, which is either a
         % function handle or a constant matrix, depending on the
         % time profile
-        options = odeset(options_template, "Jacobian", Jacobian);
-    
-        % Solve ODE on domain, starting from the magnetization at
-        % the end of the previous interval (mag)
-        [~, y] = solve_ode(ode_function, time_list_interval, mag, options);
-    
+               % Create new ODE functions on given interval
+        [ode_function, Jacobian] = btpde_functions_interval( ...
+    K, Q, R, J, q, seq, interval_midpoint);
+
+    options = options_template;
+
+    [~, y] = solve_ode(ode_function, time_list_interval, mag, options);
         % Magnetization at end of interval
         mag = y(end, :).';
     end

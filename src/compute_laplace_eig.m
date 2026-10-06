@@ -30,12 +30,7 @@ end
 % Solver parameters
 params = {};
 
-% set eigs' sigma
-if isfield(mf, 'eigs')
-    params = [params {mf.eigs.sigma}];
-else
-    params = [params {-1e-8}];
-end
+
 
 % Display algorithm iteration details
 params = [params {"Display" true}];
@@ -186,23 +181,61 @@ function [values, funcs] = eigendecompose(KQ, M, params, mf, eiglim)
 
 
 % Set number of eigenvalues to compute
+% Set number of eigenvalues to compute
 neig_max = min([mf.neig_max, size(M, 1)]);
-% Set maximum size of Krylov subspace
+
+% Octave eigs expects options in a structure
+opts = struct();
+
+% Set eigs sigma
+if isfield(mf, 'eigs') && isfield(mf.eigs, 'sigma')
+    sigma = mf.eigs.sigma;
+else
+    sigma = -1e-8;
+end
+
+% Set eigs sigma
+if isfield(mf, 'eigs') && isfield(mf.eigs, 'sigma')
+    opts.sigma = mf.eigs.sigma;
+else
+    opts.sigma = -1e-8;
+end
+
+% Display algorithm iteration details
+opts.disp = 1;
+
+% Convergence tolerance
+if isfield(mf, 'eigs') && isfield(mf.eigs, 'tolerance') ...
+        && isnumeric(mf.eigs.tolerance)
+    opts.tol = mf.eigs.tolerance;
+end
+
+% Maximum number of iterations
+if isfield(mf, 'eigs') && isfield(mf.eigs, 'maxiter') ...
+        && isnumeric(mf.eigs.maxiter)
+    opts.maxit = mf.eigs.maxiter;
+elseif isfield(mf, 'eigs') && isfield(mf.eigs, 'maxiterations') ...
+        && isnumeric(mf.eigs.maxiterations)
+    opts.maxit = mf.eigs.maxiterations;
+end
+
+% Maximum size of Krylov/Lanczos subspace
 if isfield(mf, 'eigs') && isfield(mf.eigs, 'subspacedimension') ...
-    && isnumeric(mf.eigs.subspacedimension)
+        && isnumeric(mf.eigs.subspacedimension)
 
     ssdim = max([neig_max+2, mf.eigs.subspacedimension]);
     if ssdim < size(M, 1)
-        params = [params {"SubspaceDimension" ssdim}];
+        opts.p = ssdim;
     else
         warning("SubspaceDimension is invalid (> dim of mass matrix).")
     end
+
 elseif isfield(mf, 'eigs') && isfield(mf.eigs, 'ssdim') ...
-    && isnumeric(mf.eigs.ssdim)
+        && isnumeric(mf.eigs.ssdim)
 
     ssdim = max([neig_max+2, mf.eigs.ssdim]);
     if ssdim < size(M, 1)
-        params = [params {"SubspaceDimension" ssdim}];
+        opts.p = ssdim;
     else
         warning("SubspaceDimension is invalid (> dim of mass matrix).")
     end
@@ -212,8 +245,7 @@ end
 % If 2 * neig_max >= nnode, a full decomposition is performed,
 % calling the eig function inside eigs
 tic
-[funcs, values] = eigs(KQ, M, neig_max, params{:}, ...
-    "IsSymmetricDefinite", true);
+[funcs, values] = eigs(KQ, M, neig_max, sigma, opts);
 toc
 
 % Sort eigenvalues in increasing order

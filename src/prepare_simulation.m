@@ -24,8 +24,16 @@ setup.pde = prepare_pde(setup);
 setup = prepare_experiments(setup);
 
 % Update setup info
-setup.ncompartment = length(setup.pde.compartments);
-setup.nboundary = length(setup.pde.boundaries);
+setup.ncompartment = numel(setup.pde.compartments);
+setup.nboundary = numel(setup.pde.boundaries);
+disp("DEBUG ncompartment:");
+disp(setup.ncompartment);
+disp("DEBUG compartments:");
+disp(setup.pde.compartments);
+disp("DEBUG nboundary:");
+disp(setup.nboundary);
+disp("DEBUG boundaries:");
+disp(setup.pde.boundaries);
 
 setup.nsequence = length(setup.gradient.sequences);
 if isfield(setup.gradient,'directions') && isfield(setup.gradient,'values')

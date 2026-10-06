@@ -21,7 +21,7 @@ addpath(genpath("src"));
 addpath(genpath("setups"));
 
 % setup_1axon_analytical;
-%setup_1sphere_analytical;
+setup_1sphere_analytical;
 % setup_15spheres;
 % setup_2axons_deform;
 % setup_5axons_myelin_relax;
@@ -30,7 +30,7 @@ addpath(genpath("setups"));
 % setup_30axons_flat;
 % setup_30axons;
 % setup_200axons;
-setup_batch;
+%setup_batch;
 
 %% Prepare simulation
 [setup, femesh, surfaces, cells]  = prepare_simulation(setup);

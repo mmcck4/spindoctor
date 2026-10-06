@@ -32,6 +32,13 @@ function results = solve_mf(femesh, setup, lap_eig, savepath, save_magnetization
 %           Computational time for each iteration
 %       totaltime: [1 x 1]
 %           Total computational time, including matrix assembly
+if nargin < 4
+    savepath = "";
+end
+
+if nargin < 5
+    save_magnetization = true;
+end
 
 if numel(setup.mf.gpu) > 1
     results = solve_mf_gpus(femesh, setup, lap_eig, savepath, save_magnetization);
