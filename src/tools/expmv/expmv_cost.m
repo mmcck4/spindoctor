@@ -8,7 +8,7 @@ function [cost, A_shift, s, m, mu, tol] = expmv_cost(A, b, M)
 
 %   Awad H. Al-Mohy and Nicholas J. Higham, November 9, 2010.
 
-prec = underlyingType(A);
+prec = class(A);
 n = length(A);
 t = 1;
 
@@ -19,7 +19,7 @@ switch prec
 end
 
 % shift
-mu = gather(trace(A)/n); 
+mu =trace(A)/n; 
 ss = size(A);
 % Indices of the main diagonal
 index = 1:ss(1)+1:ss(1)*ss(2);

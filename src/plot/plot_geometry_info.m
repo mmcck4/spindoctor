@@ -11,10 +11,9 @@ function plot_geometry_info(setup, femesh)
 
 compartments = setup.pde.compartments;
 
-cmpts_in = compartments == "in";
-cmpts_out = compartments == "out";
-cmpts_ecs = compartments == "ecs";
-
+cmpts_in = strcmp(compartments, "in");
+cmpts_out = strcmp(compartments, "out");
+cmpts_ecs = strcmp(compartments, "ecs");
 % Get volume and surface area quantities from mesh
 [volumes, surface_areas] = get_vol_sa(femesh);
 boundary_markers = ~cellfun(@isempty, femesh.facets);

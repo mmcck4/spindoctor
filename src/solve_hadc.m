@@ -28,7 +28,7 @@ end
 
 
 % Check if a save path has been provided (this toggers saving)
-do_save = nargin == nargin(@solve_hadc);
+do_save = false;
 if isfield(setup.hadc, 'rerun')
     rerun = setup.hadc.rerun;
 else
@@ -125,11 +125,9 @@ allinds = [ncompartment nsequence ndirection];
 temp_store = cell(allinds);
 
 % Check if Parallel Computing Toolbox is licensed
-if license('test', 'Distrib_Computing_Toolbox') && isempty(gcp('nocreate'))
-    parpool('local', [1, 2048]);
-end
+% Octave compatibility: do not start MATLAB parallel workers.
 
-parfor iall = 1:prod(allinds)
+for iall = 1:prod(allinds)
     % Measure iteration time
     itertime = tic;
 
@@ -141,27 +139,8 @@ parfor iall = 1:prod(allinds)
     ug = directions(:, idir);
 
     % File name for saving or loading iteration results
-    filename = sprintf("%s/%s.mat", savepath, seq.string(true));
-    mfile = matfile(filename, "Writable", false);
-    gradient_field = sprintf("cmpt%d_", icmpt) + gradient_fieldstring(ug);
+        % Octave compatibility: skip loading cached results.
     no_result = true;
-    
-    % Check if results are already available
-    if ~rerun && do_save && hasfield(mfile, gradient_field)
-        % Load results
-        fprintf("Load hadc %d/%d.\n", iall, prod(allinds));
-        try
-            data = mfile.(gradient_field);
-            adc(iall) = data.adc;
-            itertimes(iall) = data.itertimes;
-            totaltime_addition = totaltime_addition + data.itertimes;
-            no_result = false;
-        catch
-            no_result = true;
-            warning("hadc: the saved data of experiment %s %s is broken. Rerun simulation.", ...
-                seq.string, gradient_field);
-        end
-    end
 
     % Run simulation if no result is saved or results are not available
     if no_result
@@ -172,18 +151,20 @@ parfor iall = 1:prod(allinds)
         surfint = G{icmpt} * (diffusivity(:, :, icmpt) * ug);
 
         % Display state of iterations
-        fprintf( ...
-            join([
-                "Solving HADC model of size %d using %s:"
-                "  Direction %d of %d: ug = [%.2f; %.2f; %.2f]"
-                "  Sequence  %d of %d: f = %s"
-                "  Compartment %d of %d: %s\n"
-            ], newline), ...
-            sum(npoint_cmpts), solver_str, ...
-            idir, ndirection, ug, ...
-            iseq, nsequence, seq, ...
-            icmpt, ncompartment, compartments(icmpt) ...
-        );
+  
+    % Display state of iterations
+    fprintf( ...
+        ['Solving HADC model of size %d using %s:\n' ...
+         '  Direction %d of %d: ug = [%.2f; %.2f; %.2f]\n' ...
+         '  Sequence  %d of %d: f = %s\n' ...
+         '  Compartment %d of %d: %s\n'], ...
+        sum(npoint_cmpts), solver_str, ...
+        idir, ndirection, ug(1), ug(2), ug(3), ...
+        iseq, nsequence, char(seq), ...
+        icmpt, ncompartment, char(compartments(icmpt)) ...
+    );
+
+
         
         % We only keep two points in tlist to output solution at all time
         % steps
@@ -197,7 +178,6 @@ parfor iall = 1:prod(allinds)
             "Mass", M{icmpt}, ...
             "AbsTol", abstol, ...
             "RelTol", reltol, ...
-            "Vectorized", "on", ...
             "Stats", "off", ...
             "Jacobian", Jacobian ...
         );

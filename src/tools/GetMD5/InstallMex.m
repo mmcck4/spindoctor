@@ -188,9 +188,7 @@ if ~isempty(whichMex)
 end
 
 if ~ispc && strcmpi(Ext, '.c')
-   % C99 for the GCC and XCode compilers.
-   % Note: 'CFLAGS="\$CFLAGS -std=c99"' must be separated to 2 strings!!!
-   Opts = {'-O', 'CFLAGS="\$CFLAGS', '-std=c99"'};
+    Opts = {'-O'};
 else
    Opts = {'-O'};
 end

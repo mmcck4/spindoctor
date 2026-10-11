@@ -14,7 +14,8 @@ xticklabel = num2cell(1:ncompartment);
 xticklabel{ncompartment + 1} = "Total";
 
 figure;
-sgtitle(title_str);
+subplot(nsequence, 1, 1);
+title(title_str);
 for iseq = 1:nsequence
     subplot(nsequence, 1, iseq);
     hold on;

@@ -16,7 +16,7 @@ xticklabel = num2cell(1:n1);
 xticklabel{end + 1} = "Total";
 
 figure;
-sgtitle(title_str);
+
 for iseq = 1:nsequence
     subplot(nsequence, 1, iseq);
     hold on;
@@ -28,3 +28,6 @@ for iseq = 1:nsequence
     xlabel(sprintf("%s", xlabel_str));
     ylabel("Computational time (s)");
 end
+annotation("textbox", [0 0.95 1 0.05], "String", title_str, ...
+    "EdgeColor", "none", "HorizontalAlignment", "center", ...
+    "FontWeight", "bold");

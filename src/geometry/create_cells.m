@@ -17,9 +17,9 @@ dmin = setup.geometry.dmin;
 dmax = setup.geometry.dmax;
 
 % Spatial dimension
-if cell_shape == "sphere"
+if strcmp(cell_shape, "sphere")
     d = 3;
-elseif cell_shape == "cylinder"
+elseif strcmp(cell_shape, "cylinder")
     d = 2;
 end
 
@@ -45,7 +45,7 @@ while icell < ncell && npoint < npoint_max
 
     % Generate a random point using a uniform distribution with zero mean and
     % variance proportional to rmean
-    if cell_shape == "sphere"
+    if strcmp(cell_shape, "sphere")
         point = (rand(3, 1) - 0.5) * rmean * max(10, ncell^(1 / 3));
     else
         point = (rand(2, 1) - 0.5) * rmean * max(10, sqrt(ncell)) * 40;

@@ -20,17 +20,25 @@ addpath(genpath("src"));
 % Get setup
 addpath(genpath("setups"));
 
-% setup_1axon_analytical;
-setup_1sphere_analytical;
+%setup_1axon_analytical;
+
+
+setup_1sphere_analytical; %can set the geometry to 1 for testing, should be set to 64
+
+
 % setup_15spheres;
 % setup_2axons_deform;
 % setup_5axons_myelin_relax;
-% setup_neuron;
-% setup_4axons_flat;
+%setup_neuron;
+%setup_4axons_flat;
 % setup_30axons_flat;
 % setup_30axons;
 % setup_200axons;
+
+
 %setup_batch;
+
+
 
 %% Prepare simulation
 [setup, femesh, surfaces, cells]  = prepare_simulation(setup);

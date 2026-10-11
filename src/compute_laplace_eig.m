@@ -252,11 +252,22 @@ toc
 [values, indices] = sort(diag(values));
 funcs = funcs(:, indices);
 
+
 if any(values < 0)
     i = find(values < 0);
-    i_str = sprintf(join(repmat("%d", 1, length(i))), i);
-    v_str = sprintf(join(repmat("%g", 1, length(i))), values(i));
-    warning("Found negative eigenvalues: indices " + i_str + ", values " + v_str + ". Setting them to zero.");
+    i_str = sprintf("%d, ", i);
+    v_str = sprintf("%g, ", values(i));
+
+    % Remove trailing separators.
+    if ~isempty(i_str)
+        i_str = i_str(1:end-2);
+    end
+    if ~isempty(v_str)
+        v_str = v_str(1:end-2);
+    end
+
+    warning("Found negative eigenvalues: indices %s, values %s. Setting them to zero.", ...
+        i_str, v_str);
     values(i) = 0;
 end
 

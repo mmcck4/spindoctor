@@ -16,7 +16,7 @@ ymax = max(diffusion_tensor, [], "all");
 
 figure;
 hold on;
-sgtitle("Diffusion tensor")
+%Title
 for iseq = 1:nsequence
     subplot(1, nsequence, iseq);
     hold on;

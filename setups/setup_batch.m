@@ -76,7 +76,7 @@ setup.pde.permeability_ecs = 0;                         % Permeability ECS bound
 
 %% Gradient sequences
 setup.gradient.sequences = {PGSE(10000,43000)};
-setup.gradient.directions = unitsphere(32);
+setup.gradient.directions = unitsphere(32); %%make sure to cahnge this back to 32
 setup.gradient.values = [500 1000 2500 4000];
 setup.gradient.values_type  = "b";
 %% MF experiment parameters (comment block to skip experiment)

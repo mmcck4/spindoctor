@@ -27,7 +27,7 @@ if bal
     if norm(B,1) < norm(A,1), A = B; end
 end
 
-if nargin < 5 || isempty(prec), prec = underlyingType(A); end
+if nargin < 5 || isempty(prec), prec = class(A); end
 
 switch prec
     case 'double'
@@ -40,7 +40,7 @@ end
 
 n = length(A);
 if shift
-    mu = gather(trace(A)/n);
+    mu = trace(A)/n;
     % A = A-mu*eye(n);
     s = size(A);
     % Indices of the main diagonal
@@ -49,7 +49,7 @@ if shift
 end
 
 mv = 0;
-if ~force_estm, normA = gather(norm(A,1)); end
+if ~force_estm, normA = norm(A,1); end
 
 if ~force_estm && normA <= 4*theta(m_max)*p_max*(p_max + 3)/(m_max*size(b,2));
     % Base choice of m on normA, not the alpha_p

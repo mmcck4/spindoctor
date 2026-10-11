@@ -25,10 +25,10 @@ iplot = 0;
 for iseq = 1:nsequence
     yvec = real(signal_allcmpts(:, iseq)); % / real(signal_allcmpts(iseq, 1));
     bvec = bvalues(:, iseq);
-    h = plot(bvec, log10(yvec), "b" + markervec_cell{mod(iseq - 1, 6) + 1});
+    h = plot(bvec, log10(yvec), ["b" markervec_cell{mod(iseq - 1, 6) + 1}]);
     set(h, "MarkerSize",  10,  "LineWidth", 1);
     iplot = iplot + 1;
-    legend_vec{iplot} = " Experi " + num2str(iseq);
+    legend_vec{iplot} = sprintf(" Experi %d", iseq);
 end
 
 yvec = signal_free(:);
@@ -45,9 +45,9 @@ for iseq = 1:nsequence
     legend_vec{iplot} = sprintf("Experiment %d, linear part", iseq);
 end
 
-legend(legend_vec{1:iplot});
-legend("Location", "southwest");
-set(legend, "FontSize", 10)
+lgd = legend(legend_vec(1:iplot));
+set(lgd, "location", "southwest");
+set(lgd, "fontsize", 10);
 set(gca, "FontSize", 10)
 xlabel("B-value")
 ylabel("log10(signal)")

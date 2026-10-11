@@ -77,7 +77,7 @@ setup.pde.permeability_ecs = 0;                         % Permeability ECS bound
 
 %% Gradient sequencesdr
 setup.gradient.sequences = {PGSE(8000,49000)};
-setup.gradient.directions = unitsphere(64);
+setup.gradient.directions = unitsphere(1); %set back to 64 after done testing (my computer was blwoing up)
 setup.gradient.values = [31, 105, 179, 253];
 setup.gradient.values_type  = "g";        % Gradient directions [3 x ndirection]
 

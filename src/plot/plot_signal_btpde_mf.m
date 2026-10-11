@@ -1,21 +1,8 @@
 function plot_signal_btpde_mf(setup, signal_allcmpts, signal_mf_allcmpts, signal_mfga_allcmpts)
 %PLOT_SIGNAL_BTPDE_MF Plot BTPDE, MF and MFGA signal.
 
-markervec = strings(6, 1);
-markervec(1) = "o";
-markervec(2) = "o";
-markervec(3) = "+";
-markervec(4) = "d";
-markervec(5) = "s";
-markervec(6) = "*";
-
-colorvec = strings(6, 1);
-colorvec(1) = "r";
-colorvec(2) = "b";
-colorvec(3) = "k";
-colorvec(4) = "c";
-colorvec(5) = "g";
-colorvec(6) = "m";
+markervec = {"o"; "o"; "+"; "d"; "s"; "*"};
+colorvec = {"r"; "b"; "k"; "c"; "g"; "m"};
 
 bvalues = setup.gradient.bvalues;
 nsequence = size(bvalues, 2);
@@ -29,11 +16,11 @@ for iseq = 1:nsequence
     yvec = real(signal_allcmpts(:, iseq));
     bvec = bvalues(:, iseq);
     h = plot(bvec, log10(yvec), ...
-        colorvec(mod(iseq - 1, 6) + 1) + markervec(mod(0, 6) + 1));
+    [colorvec{mod(iseq - 1, 6) + 1}, markervec{1}]);
 
     set(h, "MarkerSize", 9, "LineWidth", 1);
     iplot = iplot + 1;
-    legend_vec(iplot) = "BTPDE Experi " + num2str(iseq);
+    legend_vec{iplot} = sprintf("BTPDE Experi %d", iseq);
 end
 legend(legend_vec{1:iplot});
 legend("Location", "southwest");
@@ -50,11 +37,11 @@ for iseq = 1:nsequence
     yvec = real(signal_mf_allcmpts(:, iseq));
     bvec = bvalues(:, iseq);
     h = plot(bvec, log10(yvec), ...
-        colorvec(mod(iseq - 1, 6) + 1) + markervec(mod(0, 6) + 6));
+    [colorvec{mod(iseq - 1, 6) + 1}, markervec{6}]);
     set(h, "MarkerSize", 9, "LineWidth", 1);
 
     iplot = iplot + 1;
-    legend_vec(iplot) = "MF Experi " + num2str(iseq);
+    legend_vec{iplot} = sprintf("MF Experi %d", iseq);
 end
 legend(legend_vec{1:iplot});
 legend("Location", "southwest");
@@ -70,15 +57,15 @@ for iseq = 1:nsequence
     yvec = real(signal_mfga_allcmpts(:, iseq));
     bvec = bvalues(:, iseq);
     h = plot(bvec, log10(yvec), ...
-        colorvec(mod(iseq - 1, 6) + 1) + markervec(mod(iseq - 1, 6) + 1));
+    [colorvec{mod(iseq - 1, 6) + 1}, markervec{mod(iseq - 1, 6) + 1}]);
     set(h, "LineWidth", 1);
     iplot = iplot + 1;
-    legend_vec(iplot) = "MFGA Experi " + num2str(iseq);
+    legend_vec{iplot} = sprintf("MFGA Experi %d", iseq);
 end
 
 %%
-legend(legend_vec{1:iplot});
-legend("Location", "southwest");
+lgd = legend(legend_vec(1:iplot));
+set(lgd, "location", "southwest");
 set(gca, "FontSize", 12)
 grid on
 title("BTPDE, MF and MFGA signals");

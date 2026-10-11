@@ -23,7 +23,7 @@ n = [];
 alpha0 = 0;
 j = 0;
 while ~isempty(alpha0) && alpha0(1) < alpha_max
-    fprintf('Computing zeros of F(alpha) for n = %d\n', j);
+    fprintf('Computing zeros of F(alpha) for n (in compute_eigenvalues)= %d\n', j);
     alpha0 = find_alpha_n(alpha_max, j, params, dalpha);
     alpha = [alpha alpha0];
     n = [n j*ones(size(alpha0))];

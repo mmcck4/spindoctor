@@ -42,7 +42,7 @@ rmean = (setup.geometry.rmin + setup.geometry.rmax) / 2;
 namplitude = setup.namplitude;
 nsequence = setup.nsequence;
 
-if setup.geometry.cell_shape == "cylinder"
+if strcmp(setup.geometry.cell_shape, "cylinder")
     dim = 2;
     get_vol = @(r) pi * r.^2 * setup.geometry.height;
 else
@@ -74,7 +74,7 @@ else
 end
 
 % Get ECS parameters
-if setup.geometry.ecs_shape ~= "no_ecs"
+if ~strcmp(setup.geometry.ecs_shape, "no_ecs")
     % Include ECS
     rho_ecs = setup.pde.initial_density_ecs;
     r_ecs = r_out + setup.geometry.ecs_ratio * rmean;

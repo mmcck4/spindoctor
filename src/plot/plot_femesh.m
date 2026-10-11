@@ -18,7 +18,7 @@ for label = labels
     figure;
     end
     hold on
-    for icmpt = find(compartments == label)
+    for icmpt = find(strcmp(compartments, label))
         facets = [femesh.facets{icmpt, :}];
         points = femesh.points{icmpt};
 
@@ -44,7 +44,10 @@ for label = labels
     view(3);
     axis equal;
     axis(axis_vec);
-    inds = find(compartments == label);
-    cmpt_str = sprintf(join(repmat("%d", 1, length(inds))), inds);
-    title(sprintf("Finite element mesh, %s compartment: [%s]", label, cmpt_str));
+    inds = find(strcmp(compartments, label));
+    cmpt_str = sprintf("%d, ", inds);
+if ~isempty(cmpt_str)
+    cmpt_str = cmpt_str(1:end-2);
+end
+    title(sprintf("Finite element mesh, %s compartment: [%s]", char(label), cmpt_str));
 end
