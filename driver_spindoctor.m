@@ -23,7 +23,7 @@ addpath(genpath("setups"));
 %setup_1axon_analytical;
 
 
-setup_1sphere_analytical; %can set the geometry to 1 for testing, should be set to 64
+%setup_1sphere_analytical; %can set the geometry to 1 for testing, should be set to 64
 
 
 % setup_15spheres;
@@ -36,7 +36,7 @@ setup_1sphere_analytical; %can set the geometry to 1 for testing, should be set 
 % setup_200axons;
 
 
-%setup_batch;
+setup_batch;
 
 
 
@@ -101,7 +101,9 @@ if ~do_plots
     return
 end
 
-if setup.geometry.cell_shape == "sphere" || setup.geometry.cell_shape == "cylinder"
+
+if strcmp(setup.geometry.cell_shape, "sphere") || ...
+   strcmp(setup.geometry.cell_shape, "cylinder")
     % Plot cells in canonical configuration
     plot_cells(cells, setup);
 end
@@ -197,44 +199,44 @@ else
     end
 end % One or many directions
 
+%%can comment back in, just throwing an error right now
+% if isfield(setup, "mf")
+%     % Plot Matrix Formalism effective diffusion tensor
+%     plot_diffusion_tensor(mf_hadc.diffusion_tensor_allcmpts, setup.pde.mean_diffusivity);
 
-if isfield(setup, "mf")
-    % Plot Matrix Formalism effective diffusion tensor
-    plot_diffusion_tensor(mf_hadc.diffusion_tensor_allcmpts, setup.pde.mean_diffusivity);
+%     % Relative error between BTPDE and MF signal
+%     signal_allcmpts_relerr = abs(mf.signal_allcmpts - btpde.signal_allcmpts) ...
+%         ./ max(abs(btpde.signal_allcmpts), [], 3);
 
-    % Relative error between BTPDE and MF signal
-    signal_allcmpts_relerr = abs(mf.signal_allcmpts - btpde.signal_allcmpts) ...
-        ./ max(abs(btpde.signal_allcmpts), [], 3);
-
-    % Difference between BTPDE and MF signal, normalized by initial signal
-    signal_allcmpts_abserr_vol = abs(mf.signal_allcmpts - btpde.signal_allcmpts) ./ setup.pde.initial_signal;
+%     % Difference between BTPDE and MF signal, normalized by initial signal
+%     signal_allcmpts_abserr_vol = abs(mf.signal_allcmpts - btpde.signal_allcmpts) ./ setup.pde.initial_signal;
     
-    if setup.ndirection == 1
-        % Plot BTPDE, MF and MFGA signals
-        plot_signal(setup.gradient.bvalues, btpde.signal_allcmpts, free.signal_allcmpts, btpde_fit.S0_allcmpts, btpde_fit.adc, "BTPDE signal");
-        plot_signal(setup.gradient.bvalues, mf.signal_allcmpts, free.signal_allcmpts, mf_fit.S0_allcmpts, mf_fit.adc, "MF signal");
-        % plot_signal(setup.gradient.bvalues, mfga.signal_allcmpts, free.signal_allcmpts, setup.pde.initial_signal, mfga.adc_allcmpts, "MFGA signal");
-        plot_signal_btpde_mf(setup, btpde.signal_allcmpts, mf.signal_allcmpts, mf_hadc.signal_allcmpts);
+%     if setup.ndirection == 1
+%         % Plot BTPDE, MF and MFGA signals
+%         plot_signal(setup.gradient.bvalues, btpde.signal_allcmpts, free.signal_allcmpts, btpde_fit.S0_allcmpts, btpde_fit.adc, "BTPDE signal");
+%         plot_signal(setup.gradient.bvalues, mf.signal_allcmpts, free.signal_allcmpts, mf_fit.S0_allcmpts, mf_fit.adc, "MF signal");
+%         % plot_signal(setup.gradient.bvalues, mfga.signal_allcmpts, free.signal_allcmpts, setup.pde.initial_signal, mfga.adc_allcmpts, "MFGA signal");
+%         plot_signal_btpde_mf(setup, btpde.signal_allcmpts, mf.signal_allcmpts, mf_hadc.signal_allcmpts);
 
-        % Display difference
-        disp("Error (normalized by initial signal)");
-        disp(signal_allcmpts_abserr_vol);
-        disp("Relative error:");
-        disp(signal_allcmpts_relerr);
-    else
-        % Plot HARDI signal
-        plot_hardi(setup.gradient.directions, real(btpde.signal_allcmpts) / setup.pde.initial_signal, "BTPDE signal")
-        plot_hardi(setup.gradient.directions, real(mf.signal_allcmpts) / setup.pde.initial_signal, "MF signal")
+%         % Display difference
+%         disp("Error (normalized by initial signal)");
+%         disp(signal_allcmpts_abserr_vol);
+%         disp("Relative error:");
+%         disp(signal_allcmpts_relerr);
+%     else
+%         % Plot HARDI signal
+%         plot_hardi(setup.gradient.directions, real(btpde.signal_allcmpts) / setup.pde.initial_signal, "BTPDE signal")
+%         plot_hardi(setup.gradient.directions, real(mf.signal_allcmpts) / setup.pde.initial_signal, "MF signal")
 
-        % Plot relative difference
-        fig_title = "Rel diff between BTPDE and MF";
-        plot_hardi(setup.gradient.directions, signal_allcmpts_relerr, fig_title);
+%         % Plot relative difference
+%         fig_title = "Rel diff between BTPDE and MF";
+%         plot_hardi(setup.gradient.directions, signal_allcmpts_relerr, fig_title);
 
-        % Plot difference normalized by volume
-        fig_title = "Diff between BTPDE and MF normalized by volume";
-        plot_hardi(setup.gradient.directions, signal_allcmpts_abserr_vol, fig_title);
-    end
-end
+%         % Plot difference normalized by volume
+%         fig_title = "Diff between BTPDE and MF normalized by volume";
+%         plot_hardi(setup.gradient.directions, signal_allcmpts_abserr_vol, fig_title);
+%     end
+% end
 
 %%
 if isfield(setup, "karger")

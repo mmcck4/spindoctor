@@ -20,12 +20,11 @@ if isequal(A,abs(A))
       for j=1:m         % for positive matrices only
          e = A_prime*e;
       end
-      c = gather(norm(e,inf));
-      mv = gather(m);
+      c = norm(e,inf);
+      mv = m;
 else
       [c,v,w,it] = normest1(@afun_power,t);
-      c = gather(c);
-      mv = gather(it(2)*t*m);
+      mv = it(2)*t*m;
 end
 
 function Z = afun_power(flag,X)

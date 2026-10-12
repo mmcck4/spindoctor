@@ -76,20 +76,20 @@ setup.pde.permeability_ecs = 0;                         % Permeability ECS bound
 
 %% Gradient sequences
 setup.gradient.sequences = {PGSE(10000,43000)};
-setup.gradient.directions = unitsphere(32); %%make sure to cahnge this back to 32
+setup.gradient.directions = unitsphere(1); %%make sure to cahnge this back to 32
 setup.gradient.values = [500 1000 2500 4000];
 setup.gradient.values_type  = "b";
 %% MF experiment parameters (comment block to skip experiment)
 % Length scale hard-coded for these experiments from the diffusivity values and sequence length.
 % char_length_scale = sqrt(2*3*setup.pde.diffusivity_in*1000*101);
 setup.mf.length_scale =3;                               % Minimum length scale of eigenfunctions
-setup.mf.neig_max = 4000;                               % Requested number of eigenvalues
+setup.mf.neig_max = 500; %original is 4000, switched to 500 for time reduction                               % Requested number of eigenvalues
 setup.mf.ninterval = 400;                               % Number of intervals to discretize time profile in MF (if not PGSE and doublePGSE)
 setup.mf.eigs.sigma = 1e-8;
 setup.mf.rerun=false;                                   % Rerun simulation with or without saved results  
 setup.mf.save_eig = false;                              % Flag to save eigenfunctions. If set to false, moment matrices are saved instead, which are O(N_eig x N_eig) instead of O(N_eig X N_node);
 %% BTPDE experiment parameters (comment block to skip experiment)
-% setup.btpde.ode_solver = @ode15s;                       % ODE solver for BTPDE
-% setup.btpde.reltol = 1e-4;                              % Relative tolerance for ODE solver
-% setup.btpde.abstol = 1e-6;                              % Absolute tolerance for ODE solver
-% setup.btpde.rerun = false;                               % Rerun simulation with or without saved results
+%setup.btpde.ode_solver = @ode15s;                       % ODE solver for BTPDE
+%setup.btpde.reltol = 1e-4;                              % Relative tolerance for ODE solver
+%setup.btpde.abstol = 1e-6;                              % Absolute tolerance for ODE solver
+%setup.btpde.rerun = false;                               % Rerun simulation with or without saved results
