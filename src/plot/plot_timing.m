@@ -12,7 +12,9 @@ nelement = sum(cellfun(@(x) size(x, 2), femesh.elements));
 nsequence = size(elapsed_time, 2);
 n1 = size(elapsed_time, 1);
 
-xticklabel = num2cell(1:n1);
+xticklabel = arrayfun(@num2str, 1:n1, ...
+    "UniformOutput", false);
+
 xticklabel{end + 1} = "Total";
 
 figure;

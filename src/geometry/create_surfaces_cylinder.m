@@ -27,7 +27,7 @@ rmax = setup.geometry.rmax;
 height = setup.geometry.height;
 include_in = setup.geometry.include_in;
 ecs_shape = setup.geometry.ecs_shape;
-include_ecs = ~strcmp(ecs_shape, "no_ecs");
+include_ecs = ecs_shape ~= "no_ecs";
 if include_in
     in_ratio = setup.geometry.in_ratio;
 else
@@ -119,11 +119,12 @@ if include_ecs
             points_ecs = points_ecs(:, inds(1:end-1));
             edges_ecs = [1:length(inds)-1; 2:length(inds)-1 1];
         case "tight_wrap"
-    % Octave does not implement MATLAB's alphaShape.
-    % For the single-axon geometry, the convex hull is sufficient.
-            inds = convhull(points_ecs');
-            points_ecs = points_ecs(:, inds(1:end-1));
-            edges_ecs = [1:length(inds)-1; 2:length(inds)-1 1];
+            shp_ecs = alphaShape(points_ecs');
+            shp_ecs.HoleThreshold = 2 * pi * ((1 + ecs_ratio) * max(radii)).^2;
+            shp_ecs.Alpha = 2.5 * shp_ecs.criticalAlpha("one-region");
+            [bf, P] = boundaryFacets(shp_ecs);
+            points_ecs = P';
+            edges_ecs = bf';
     end
     nedge_ecs = size(edges_ecs, 2);
 else
@@ -142,18 +143,24 @@ edges = [edges_in edges_out+npoint_in edges_ecs+npoint_in+npoint_out];
 
 npoint = size(points, 2);
 
-if strcmp(ecs_shape, "tight_wrap")
-    % Octave does not implement alphaShape.
-    % Use ordinary Delaunay triangulation for the single-axon case.
-    DT = delaunay(points(1, :)', points(2, :)');
-    facets = DT';
+if ecs_shape == "tight_wrap"
+    shp = alphaShape(points');
+    shp.Alpha = shp_ecs.Alpha;
+    shp.HoleThreshold = 2 * pi * (2 * (1 + ecs_ratio) * max(radii)).^2;
+    facets = shp.alphaTriangulation';
+    [~, P] = boundaryFacets(shp);
+    if size(P, 1) ~= size(points_ecs, 2)
+        plot(shp_ecs);
+        hold on;
+        plot(shp, "FaceColor", "r", "FaceAlpha", 0.5, "EdgeColor", "b")
+        title("Error in green area.")
+        error("Problem in cylinder ground mesh tight wrap generation. " ...
+            + "Try deleting geometry files and rerun geometry generation.");
+    end
 else
-    % Octave does not implement MATLAB's constrained
-    % delaunayTriangulation, so use its standard Delaunay routine.
-    DT = delaunay(points(1, :)', points(2, :)');
-    facets = DT';
+    DT = delaunayTriangulation(points', edges');
+    facets = DT.ConnectivityList';
 end
-
 
 nfacet = size(facets, 2);
 

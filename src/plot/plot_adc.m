@@ -10,7 +10,9 @@ function plot_adc(adc, adc_allcmpts, title_str)
 ncompartment = size(adc, 1);
 nsequence = size(adc, 2);
 
-xticklabel = num2cell(1:ncompartment);
+xticklabel = arrayfun(@num2str, 1:ncompartment, ...
+    "UniformOutput", false);
+
 xticklabel{ncompartment + 1} = "Total";
 
 figure;

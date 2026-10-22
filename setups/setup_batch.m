@@ -89,7 +89,7 @@ setup.mf.eigs.sigma = 1e-8;
 setup.mf.rerun=false;                                   % Rerun simulation with or without saved results  
 setup.mf.save_eig = false;                              % Flag to save eigenfunctions. If set to false, moment matrices are saved instead, which are O(N_eig x N_eig) instead of O(N_eig X N_node);
 %% BTPDE experiment parameters (comment block to skip experiment)
-%setup.btpde.ode_solver = @ode15s;                       % ODE solver for BTPDE
-%setup.btpde.reltol = 1e-4;                              % Relative tolerance for ODE solver
-%setup.btpde.abstol = 1e-6;                              % Absolute tolerance for ODE solver
-%setup.btpde.rerun = false;                               % Rerun simulation with or without saved results
+setup.btpde.ode_solver = @ode15s;                       % ODE solver for BTPDE
+setup.btpde.reltol = 1e-4;                              % Relative tolerance for ODE solver
+setup.btpde.abstol = 1e-6;                              % Absolute tolerance for ODE solver
+setup.btpde.rerun = false;                               % Rerun simulation with or without saved results

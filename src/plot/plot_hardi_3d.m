@@ -19,8 +19,7 @@ end
 [namplitude, nsequence, ndirection] = size(data);
 
 % Create surface triangulation
-DT = delaunayTriangulation(directions');
-[c_sphere, ~] = convexHull(DT);
+c_sphere = convhulln(directions');
 
 for iseq = 1:nsequence
 
@@ -49,8 +48,8 @@ for iseq = 1:nsequence
         sigpoints = directions' .* sig;
 
         % Make surface plot
-        % h = trisurf(c_sphere, sigpoints(:, 1), sigpoints(:, 2), sigpoints(:, 3));
-        h = trisurf(c_sphere, sigpoints(:, 1), sigpoints(:, 2), sigpoints(:, 3), sig);
+         h = trisurf(c_sphere, sigpoints(:, 1), sigpoints(:, 2), sigpoints(:, 3));
+       
         if namplitude == 1
             set(h, "facealpha", 0.6);
         else
