@@ -33,7 +33,7 @@ addpath(genpath("setups"));
 %setup_4axons_flat;
 % setup_30axons_flat;
 % setup_30axons;
-% setup_200axons;
+%setup_200axons;
 
 
 setup_batch;

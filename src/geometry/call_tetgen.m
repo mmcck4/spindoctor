@@ -10,7 +10,7 @@ function call_tetgen(filename, options)
 
 % Tetgen command for corresponding operating system
 if ispc
-    tetgen_cmd = "src\tetgen\win64\tetgen";
+    tetgen_cmd = "src/tetgen/win64/tetgen.exe";
 elseif ismac
     out = system("chmod 775 src/tetgen/mac64/tetgen");
     if out ~= 0
@@ -49,7 +49,13 @@ end
 
 % Call Tetgen
 
-cmd = [char(tetgen_cmd), ' ', char(tetgen_options), ' ', char(filename)];
+cmd = ['"' char(tetgen_cmd) '" ', ...
+       char(tetgen_options), ' "', char(filename), '"'];
 disp(cmd)
 
-system(cmd);
+[status, output] = system(cmd);
+disp(output)
+
+if status ~= 0
+    error('TetGen failed with exit status %d.', status);
+end

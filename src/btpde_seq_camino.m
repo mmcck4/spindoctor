@@ -16,7 +16,7 @@ function mag = btpde_seq_camino(seq,q,rho,Jx,K,Q,R,solve_ode,options_template,is
 %   iseq: (int) sequence index 
 %   nsequence: (int) number of sequences
 
-    [timelist, interval_str, timeprofile_str] = seq.intervals;
+    [timelist, ~, ~] = seq.intervals;
     
     % Number of intervals
     ninterval = length(timelist) - 1;
@@ -44,35 +44,29 @@ function mag = btpde_seq_camino(seq,q,rho,Jx,K,Q,R,solve_ode,options_template,is
             ug= ug/norm(ug);
         end
         J = ug(1) * Jx{1} + ug(2) * Jx{2} + ug(3) * Jx{3};
-        % Display state of iterations
-        fprintf( ...
-            join([
-                "Solving BTPDE of size %d using %s:"
-                "  Direction: ug = [%.2f; %.2f; %.2f]"
-                "  Sequence  %d of %d: f =%.2f"
-                "  Interval  %d of %d: I = %s, %s\n"
-            ], newline), ...
-            sum(npoint_cmpts), solver_str, ...
-            ug, ...
-            iseq, nsequence, seq.call(interval_midpoint), ...
-            iint, ninterval, interval_str(iint), timeprofile_str(iint) ...
-        );
-    
         % Create new ODE functions on given interval
         [ode_function, Jacobian] = btpde_functions_interval( ...
             K, Q, R, J, q, seq, interval_midpoint);
+
+        fprintf( ...
+            ["Solving BTPDE of size %d using %s:\n" ...
+             "  Direction at midpoint: ug = [%.2f; %.2f; %.2f]\n" ...
+             "  Sequence %d of %d: f(t_mid) = %g\n" ...
+             "  Interval %d of %d: t = [%g, %g]\n"], ...
+            sum(npoint_cmpts), solver_str, ...
+            ug(1), ug(2), ug(3), ...
+            iseq, nsequence, seq.call(interval_midpoint), ...
+            iint, ninterval, timelist(iint), timelist(iint + 1) ...
+        );
     
         % Update options with new Jacobian, which is either a
         % function handle or a constant matrix, depending on the
         % time profile
-        options = odeset(options_template, "Jacobian", Jacobian);
-    
         % Solve ODE on domain, starting from the magnetization at
         % the end of the previous interval (mag)
-        [~, y] = solve_ode(ode_function, time_list_interval, mag, options);
-    
-        % Magnetization at end of interval
-        mag = y(end, :).';
+        mag = solve_btpde_ode(ode_function, Jacobian, ...
+            time_list_interval, mag, options_template, solve_ode);
+        fprintf("  Completed interval %d of %d.\n", iint, ninterval);
     end
 
 end
